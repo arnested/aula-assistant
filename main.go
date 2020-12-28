@@ -24,7 +24,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	bc := cal.NewBusinessCalendar()
-	workdayStart := bc.NextWorkdayStart(time.Date(2021, 1, 4, 22, 0, 0, 0, time.UTC))
+
+	startDate := time.Date(2021, 1, 4, 22, 0, 0, 0, time.UTC)
+
+	if startDate.Before(time.Now()) {
+		startDate = time.Now()
+	}
+
+	workdayStart := bc.NextWorkdayStart(startDate)
 	f, _ := os.Open("calendar.ics")
 	defer f.Close()
 
