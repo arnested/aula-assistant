@@ -7,17 +7,16 @@ import (
 
 func response(w io.Writer, message string) {
 	tpl := `{
-  "google": {
-    "expectUserResponse": true,
-    "richResponse": {
-      "items": [
-	{
-	  "simpleResponse": {
-	    "textToSpeech": "{{ . }}"
-	  }
+  "fulfillment_response": {
+    "messages": [
+      {
+	"text": {
+	  "text": [
+	    "{{ . }}"
+	  ]
 	}
-      ]
-    }
+      }
+    ]
   }
 }`
 	t, _ := template.New("template").Parse(tpl)
