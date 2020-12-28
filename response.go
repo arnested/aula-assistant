@@ -7,16 +7,11 @@ import (
 
 func response(w io.Writer, message string) {
 	tpl := `{
-  "fulfillment_response": {
-    "messages": [
-      {
-	"text": {
-	  "text": [
-	    "{{ . }}"
-	  ]
-	}
-      }
-    ]
+  "prompt": {
+    "firstSimple": {
+      "speech": "{{ . }}",
+      "text": "{{ . }}"
+    }
   }
 }`
 	t, _ := template.New("template").Parse(tpl)
