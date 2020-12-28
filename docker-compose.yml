@@ -1,0 +1,19 @@
+version: "2"
+
+services:
+  web:
+    restart: always
+    build: .
+    volumes:
+      - './calendar.ics:/calendar.ics:ro'
+    labels:
+      - "traefik.port=80"
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:aula-assistant.arnested.dk"
+    networks:
+      - web
+
+networks:
+  web:
+    external:
+      name: traefik_webgateway
