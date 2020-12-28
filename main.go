@@ -51,7 +51,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		skema = append(skema, fmt.Sprintf("%s med %s", expandSummary(e.Summary), organizer(e.Organizer.Cn)))
 	}
 
-	response(w, strings.Join(skema, ", "))
+	response(w, strings.Join(skema, ". "))
 }
 
 func organizer(organizer string) string {
