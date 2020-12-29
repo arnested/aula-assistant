@@ -55,9 +55,16 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	skema := []string{}
+	var prev *gocal.Event
 
 	for _, e := range c.Events {
+		e := e
 		if skipEvent(e) {
+			continue
+		}
+
+		if prev != nil && e.Start.Equal(*prev.Start) {
+			skema[len(skema)-1] = fmt.Sprintf("%s og %s", skema[len(skema)-1], organizer(e.Organizer.Cn))
 			continue
 		}
 
@@ -66,6 +73,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			expandSummary(e.Summary),
 			organizer(e.Organizer.Cn),
 		))
+
+		prev = &e
 	}
 
 	weekday, _ := lctime.StrftimeLoc("da_DK", "%A", workdayStart)
