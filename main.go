@@ -5,8 +5,10 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
+	_ "time/tzdata"
 
 	"github.com/apognu/gocal"
 	"github.com/rickar/cal/v2"
@@ -23,7 +25,10 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	timezone, _ := time.LoadLocation("Europe/Copenhagen")
+
 	bc := cal.NewBusinessCalendar()
+	bc.SetWorkHours(6*time.Hour, 12*time.Hour)
 
 	startDate := time.Date(2021, 1, 4, 22, 0, 0, 0, time.UTC)
 
@@ -32,14 +37,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	workdayStart := bc.NextWorkdayStart(startDate)
+
 	f, _ := os.Open("calendar.ics")
 	defer f.Close()
 
-	start, end := workdayStart, workdayStart.Add(24*time.Hour)
+	start, end := workdayStart, workdayStart.Add(12*time.Hour)
 
 	c := gocal.NewParser(f)
 	c.Start, c.End = &start, &end
 	c.Parse()
+
+	sort.Slice(c.Events, func(i, j int) bool {
+		return c.Events[i].Start.Before(*c.Events[j].Start)
+	})
 
 	skema := []string{}
 
@@ -48,7 +58,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		skema = append(skema, fmt.Sprintf("%s med %s", expandSummary(e.Summary), organizer(e.Organizer.Cn)))
+		skema = append(skema, fmt.Sprintf("<say-as interpret-as=\\\"time\\\" format=\\\"hm\\\">%s</say-as>: %s med %s",
+			e.Start.In(timezone).Format("15:04"),
+			expandSummary(e.Summary),
+			organizer(e.Organizer.Cn),
+		))
 	}
 
 	response(w, "<speak>"+strings.Join(skema, ".<break time=\\\"1s\\\"/> ")+"</speak>")
