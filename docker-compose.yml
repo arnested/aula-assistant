@@ -10,6 +10,7 @@ services:
       - "traefik.port=80"
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:aula-assistant.arnested.dk"
+      - "com.centurylinklabs.watchtower.enable=false"
     networks:
       - web
 
