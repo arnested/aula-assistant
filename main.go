@@ -82,7 +82,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	weekday, _ := lctime.StrftimeLoc("da_DK", "%A", workdayStart)
 
-	response(w, "<speak>"+strings.Title(weekday)+":<break time=\\\"1s\\\"/>\\n\\n"+strings.Join(skema, ".<break time=\\\"1s\\\"/>\\n")+"</speak>")
+	response(w, "<speak>"+strings.Title(weekday)+":<break time=\\\"1s\\\"/>\\n\\n"+strings.Join(skema, ".<break time=\\\"1s\\\"/>\\n")+".</speak>")
 }
 
 func organizer(organizer string) string {
