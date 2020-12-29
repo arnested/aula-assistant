@@ -51,7 +51,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		skema = append(skema, fmt.Sprintf("%s med %s", expandSummary(e.Summary), organizer(e.Organizer.Cn)))
 	}
 
-	response(w, strings.Join(skema, ". "))
+	response(w, "<speak>"+strings.Join(skema, ".<break time=\\\"1s\\\"/> ")+"</speak>")
 }
 
 func organizer(organizer string) string {
@@ -98,6 +98,9 @@ func expandSummary(summary string) string {
 
 	case "MUS":
 		return "Musik"
+
+	case "UUV":
+		return "<say-as interpret-as=\\\"characters\\\">UUV</say-as>"
 
 	default:
 		return summary
