@@ -17,6 +17,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", handler)
+
 	err := http.ListenAndServe(":80", nil)
 	if err != nil {
 		fmt.Print(err)
@@ -48,13 +49,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	c := gocal.NewParser(f)
 	c.Start, c.End = &start, &end
-	c.Parse()
+	_ = c.Parse()
 
 	sort.Slice(c.Events, func(i, j int) bool {
 		return c.Events[i].Start.Before(*c.Events[j].Start)
 	})
 
 	skema := []string{}
+
 	var prev *gocal.Event
 
 	for _, e := range c.Events {
@@ -65,6 +67,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		if prev != nil && e.Start.Equal(*prev.Start) {
 			skema[len(skema)-1] = fmt.Sprintf("%s og %s", skema[len(skema)-1], organizer(e.Organizer.Cn))
+
 			continue
 		}
 
@@ -97,11 +100,7 @@ func organizer(organizer string) string {
 }
 
 func skipEvent(e gocal.Event) bool {
-	if e.Summary == "GS" {
-		return true
-	}
-
-	return false
+	return e.Summary == "GS"
 }
 
 func expandSummary(summary string) string {
