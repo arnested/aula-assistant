@@ -61,13 +61,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		skema = append(skema, fmt.Sprintf("<say-as interpret-as=\\\"time\\\" format=\\\"hm\\\">%s</say-as>: %s med %s",
-			e.Start.In(timezone).Format("15:04"),
+			strings.TrimPrefix(e.Start.In(timezone).Format("15:04"), "0"),
 			expandSummary(e.Summary),
 			organizer(e.Organizer.Cn),
 		))
 	}
 
-	response(w, "<speak>"+strings.Join(skema, ".<break time=\\\"1s\\\"/> ")+"</speak>")
+	response(w, "<speak>"+strings.Join(skema, ".<break time=\\\"1s\\\"/>\\n")+"</speak>")
 }
 
 func organizer(organizer string) string {
