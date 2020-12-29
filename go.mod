@@ -1,6 +1,6 @@
 module arnested.dk/go/aula-assistant
 
-go 1.14
+go 1.15
 
 require (
 	github.com/apognu/gocal v0.8.0

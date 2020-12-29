@@ -27,8 +27,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	timezone, _ := time.LoadLocation("Europe/Copenhagen")
 
+	cal.DefaultLoc = timezone
+
 	bc := cal.NewBusinessCalendar()
-	bc.SetWorkHours(6*time.Hour, 12*time.Hour)
+	bc.SetWorkHours(7*time.Hour+59*time.Minute, 12*time.Hour)
 
 	startDate := time.Date(2021, 1, 4, 22, 0, 0, 0, time.UTC)
 
@@ -36,7 +38,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		startDate = time.Now()
 	}
 
-	workdayStart := bc.NextWorkdayStart(startDate)
+	workdayStart := cal.ReplaceLocation(bc.NextWorkdayStart(startDate), timezone)
 
 	f, _ := os.Open("calendar.ics")
 	defer f.Close()
