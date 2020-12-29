@@ -11,6 +11,7 @@ import (
 	_ "time/tzdata"
 
 	"github.com/apognu/gocal"
+	"github.com/klauspost/lctime"
 	"github.com/rickar/cal/v2"
 )
 
@@ -67,7 +68,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		))
 	}
 
-	response(w, "<speak>"+strings.Join(skema, ".<break time=\\\"1s\\\"/>\\n")+"</speak>")
+	weekday, _ := lctime.StrftimeLoc("da_DK", "%A", workdayStart)
+
+	response(w, "<speak>"+strings.Title(weekday)+":<break time=\\\"1s\\\"/>\\n\\n"+strings.Join(skema, ".<break time=\\\"1s\\\"/>\\n")+"</speak>")
 }
 
 func organizer(organizer string) string {
