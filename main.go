@@ -87,6 +87,9 @@ func expandSummary(summary string) string {
 	case "ENG":
 		return "Engelsk"
 
+	case "IDR":
+		return "Idræt"
+
 	case "KRI":
 		return "Kristendomskundskab"
 
