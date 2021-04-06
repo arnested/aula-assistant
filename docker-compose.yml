@@ -3,14 +3,13 @@ version: "2"
 services:
   web:
     restart: always
-    build: .
+    image: ghcr.io/arnested/aula-assistant:latest
     volumes:
       - './calendar.ics:/calendar.ics:ro'
     labels:
       - "traefik.port=80"
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host:aula-assistant.arnested.dk"
-      - "com.centurylinklabs.watchtower.enable=false"
     networks:
       - web
 
