@@ -82,6 +82,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	weekday, _ := lctime.StrftimeLoc("da_DK", "%A", workdayStart)
 
+	if len(skema) == 0 {
+		response(w, "<speak>Jeg kender ikke skemaet for "+weekday+".</speak>")
+
+		return
+	}
+
 	response(w, "<speak>"+strings.Title(weekday)+":<break time=\\\"1s\\\"/>\\n\\nKlokken "+strings.Join(skema, ".<break time=\\\"1s\\\"/>\\n")+".</speak>")
 }
 
