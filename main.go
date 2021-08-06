@@ -114,6 +114,12 @@ func expandSummary(summary string) string {
 	case "ENG":
 		return "Engelsk"
 
+	case "HDS":
+		return "Håndværk og Design"
+
+	case "HIS":
+		return "Historie"
+
 	case "IDR":
 		return "Idræt"
 
@@ -128,6 +134,9 @@ func expandSummary(summary string) string {
 
 	case "MUS":
 		return "Musik"
+
+	case "UUV - 15":
+		fallthrough
 
 	case "UUV":
 		return "<say-as interpret-as=\\\"characters\\\">UUV</say-as>"
