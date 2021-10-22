@@ -32,15 +32,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	cal.DefaultLoc = timezone
 
 	bc := cal.NewBusinessCalendar()
-	bc.SetWorkHours(7*time.Hour+59*time.Minute, 12*time.Hour)
+	bc.SetWorkHours(7*time.Hour+59*time.Minute, 17*time.Hour)
 
-	startDate := time.Date(2021, 1, 4, 22, 0, 0, 0, time.UTC)
-
-	if startDate.Before(time.Now()) {
-		startDate = time.Now()
-	}
-
-	workdayStart := cal.ReplaceLocation(bc.NextWorkdayStart(startDate), timezone)
+	workdayStart := cal.ReplaceLocation(bc.NextWorkdayStart(time.Now()), timezone)
 
 	f, _ := os.Open("calendar.ics")
 	defer f.Close()
@@ -61,6 +55,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	for _, e := range c.Events {
 		e := e
+
+		// Skip events spanning more than the current day.
+		if e.Start.Before(start) || e.End.After(end) {
+			continue
+		}
+
 		if skipEvent(e) {
 			continue
 		}
