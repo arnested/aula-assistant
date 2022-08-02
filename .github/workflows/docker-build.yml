@@ -1,5 +1,10 @@
 on: push
 name: Docker build and push
+permissions:
+  contents: write
+  packages: write
+  security-events: write
+  actions: read
 jobs:
   build:
     name: Docker build and push
