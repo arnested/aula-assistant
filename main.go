@@ -13,7 +13,23 @@ import (
 	"github.com/apognu/gocal"
 	"github.com/klauspost/lctime"
 	"github.com/rickar/cal/v2"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
+
+type lesson struct {
+	time       string
+	summary    string
+	organizers []string
+}
+
+func (l lesson) String() string {
+	return fmt.Sprintf("<say-as interpret-as=\\\"time\\\" format=\\\"hm\\\">%s</say-as>: %s med %s",
+		l.time,
+		expandSummary(l.summary),
+		organizerJoin(l.organizers),
+	)
+}
 
 func main() {
 	http.HandleFunc("/", handler)
@@ -49,7 +65,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return c.Events[i].Start.Before(*c.Events[j].Start)
 	})
 
-	skema := []string{}
+	skema := []lesson{}
 
 	var prev *gocal.Event
 
@@ -61,21 +77,21 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		if skipEvent(e) {
-			continue
-		}
-
 		if prev != nil && e.Start.Equal(*prev.Start) {
-			skema[len(skema)-1] = fmt.Sprintf("%s og %s", skema[len(skema)-1], organizer(e.Organizer.Cn))
+			skema[len(skema)-1].organizers = append(skema[len(skema)-1].organizers, organizer(e.Organizer.Cn))
+
+			if e.Summary != "GS" && e.Summary != "INK" {
+				skema[len(skema)-1].summary = e.Summary
+			}
 
 			continue
 		}
 
-		skema = append(skema, fmt.Sprintf("<say-as interpret-as=\\\"time\\\" format=\\\"hm\\\">%s</say-as>: %s med %s",
-			strings.TrimPrefix(e.Start.In(timezone).Format("15:04"), "0"),
-			expandSummary(e.Summary),
-			organizer(e.Organizer.Cn),
-		))
+		skema = append(skema, lesson{
+			time:       strings.TrimPrefix(e.Start.In(timezone).Format("15:04"), "0"),
+			summary:    e.Summary,
+			organizers: []string{organizer(e.Organizer.Cn)},
+		})
 
 		prev = &e
 	}
@@ -88,7 +104,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response(w, "<speak>"+strings.Title(weekday)+":<break time=\\\"1s\\\"/>\\n\\nKlokken "+strings.Join(skema, ".<break time=\\\"1s\\\"/>\\n")+".</speak>")
+	var skemaStrings []string
+	for _, s := range skema {
+		s := s
+		skemaStrings = append(skemaStrings, s.String())
+	}
+
+	response(w, "<speak>"+cases.Title(language.Danish).String(weekday)+":<break time=\\\"1s\\\"/>\\n\\nKlokken "+strings.Join(skemaStrings, ".<break time=\\\"1s\\\"/>\\n")+".</speak>")
 }
 
 func organizer(organizer string) string {
@@ -105,8 +127,18 @@ func organizer(organizer string) string {
 	return name
 }
 
-func skipEvent(e gocal.Event) bool {
-	return e.Summary == "GS"
+func organizerJoin(organizers []string) string {
+	length := len(organizers)
+	switch length {
+	case 0:
+		return ""
+	case 1:
+		return organizers[0]
+	case 2:
+		return fmt.Sprintf("%s og %s", organizers[0], organizers[1])
+	default:
+		return fmt.Sprintf("%s og %s", strings.Join(organizers[0:length-1], ", "), organizers[length-1])
+	}
 }
 
 func expandSummary(summary string) string {
