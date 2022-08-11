@@ -110,6 +110,9 @@ func skipEvent(e gocal.Event) bool {
 }
 
 func expandSummary(summary string) string {
+	re := regexp.MustCompile("^UUV.*")
+	summary = re.ReplaceAllString(summary, "UUV")
+
 	switch summary {
 	case "BIL":
 		return "Billedkunst"
@@ -140,9 +143,6 @@ func expandSummary(summary string) string {
 
 	case "MUS":
 		return "Musik"
-
-	case "UUV - 15":
-		fallthrough
 
 	case "UUV":
 		return "<say-as interpret-as=\\\"characters\\\">UUV</say-as>"
