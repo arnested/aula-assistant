@@ -128,6 +128,7 @@ func organizer(organizer string) string {
 }
 
 func organizerJoin(organizers []string) string {
+	sort.Strings(organizers)
 	length := len(organizers)
 	switch length {
 	case 0:
