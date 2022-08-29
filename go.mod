@@ -6,6 +6,6 @@ require (
 	github.com/apognu/gocal v0.9.0
 	github.com/klauspost/lctime v0.1.0
 	github.com/microcosm-cc/bluemonday v1.0.19
-	github.com/rickar/cal/v2 v2.1.5
-	golang.org/x/text v0.3.7 // indirect
+	github.com/rickar/cal/v2 v2.1.6
+	golang.org/x/text v0.3.7
 )
