@@ -7,5 +7,5 @@ require (
 	github.com/klauspost/lctime v0.1.0
 	github.com/microcosm-cc/bluemonday v1.0.21
 	github.com/rickar/cal/v2 v2.1.7
-	golang.org/x/text v0.3.8
+	golang.org/x/text v0.4.0
 )
