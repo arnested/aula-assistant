@@ -8,5 +8,5 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.22
 	github.com/rickar/cal/v2 v2.1.11
 	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/text v0.7.0
+	golang.org/x/text v0.8.0
 )
