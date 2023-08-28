@@ -1,3 +1,4 @@
+// Deprecated: unsupported because Google has discontinued Conversational Actions, see https://developers.google.com/assistant/ca-sunset.
 module arnested.dk/go/aula-assistant
 
 go 1.15
